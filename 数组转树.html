@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+
+<script>
+	let arrayData = [
+	  { _id:"001", name:"手机" },
+	  { _id:"002", name:"华为", parent_id: "001" },
+	  { _id:"003", name:"荣耀", parent_id: "002" },
+	  { _id:"004", name:"苹果", parent_id: "001" },
+	  { _id:"005", name:"电脑" },
+	  { _id:"006", name:"联想", parent_id: "005" },
+	  { _id:"007", name:"小米", parent_id: "005" },
+	];
+	
+	function toTree(array){
+		let obj = {}
+		let result = []
+		
+		array.forEach(item => {
+			
+			obj[item._id] = item
+			if(item.parent_id){
+				obj[item.parent_id].children = []
+			}
+		})
+		console.log(obj)
+		array.forEach(item => {
+			if(item.parent_id){
+				obj[item.parent_id].children.push(item)
+				
+			}else{
+				result.push(item)
+			}
+		})
+		
+		return result
+	}
+	
+	const tree = toTree(arrayData)
+	console.log(tree)
+	
+</script>

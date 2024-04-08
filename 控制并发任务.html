@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Document</title>
+	</head>
+	<body>
+	</body>
+</html>
+
+<script>
+	function timeout(time) {
+	    return new Promise((reslove) => {
+	        setTimeout(()=>{
+	            reslove()
+	        },time)
+	    })
+	}
+	
+	class SuperTask{
+		constructor(){
+			this.TASK_COUNT = 2
+			this.TASK_LIST = []
+			this.RUN_COUNT = 0
+		}
+		
+		add(task){
+			return new Promise((reslove)=>{
+				this.TASK_LIST.push({
+					task:task,
+					reslove:reslove
+				})
+				this._run()
+			})
+		}
+		
+		_run(){
+			if(this.RUN_COUNT < this.TASK_COUNT && this.TASK_LIST.length){
+				const {task,reslove} = this.TASK_LIST.shift()
+				task().then(()=>{
+					reslove()
+					this.RUN_COUNT--
+					this._run()
+				})
+				this.RUN_COUNT ++
+			}
+		}
+	}
+	
+	const superTask = new SuperTask()
+	function addTask(time,name) {
+	    superTask
+	        .add(()=> timeout(time))
+	        .then(()=>{
+	        console.log(`任务${name}已经完成`)
+	    })
+	}
+	
+	
+	
+	addTask(10000,1)
+	addTask(5000,2)
+	addTask(3000,3)
+	addTask(4000,4)
+	addTask(5000,5)
+</script>

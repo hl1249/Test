@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="name"></div>
+		<div id="age"></div>
+		<div id="class"></div>
+	</body>
+</html>
+
+<script>
+	
+	const user = {
+		name:"黄睿",
+		age:18,
+		class:'NO1'
+	}
+	
+	const changeNam = () => { //修改name
+		document.getElementById('name').innerText = user.name
+	}
+	
+	const changeAge = () => {
+		document.getElementById('age').innerText = user.age
+	}
+	
+	const changeClass = () => {
+		document.getElementById('class').innerText = user.class
+	}
+	
+	
+	
+	function observe(obj){
+		for(const key in obj){
+			let value = obj[key]
+			let fns = []
+			Object.defineProperty(obj,key,{
+				get() {
+					// 记录哪个函数在用我  依赖收集
+					console.log("我被get了")
+					if(window.__func && !fns.includes(window.__func)){
+						fns.push(window.__func)
+					}
+					console.log(fns)
+					return value
+				},
+				set(val) {
+					if(val === value) return
+					value = val
+					
+					fns.forEach(fn => {
+						fn()
+					})
+					// 执行用我的函数    派发更新
+				}
+			})
+		}
+	}
+	
+	observe(user)
+	
+	function autorun(fn){
+		window.__func = fn
+		fn()
+		window.__func = null
+	}
+	
+	autorun(changeNam)
+	autorun(changeAge)
+	autorun(changeClass)
+	
+</script>

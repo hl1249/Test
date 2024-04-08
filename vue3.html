@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<div id="app" >
+			<div v-bind:click="fuck">
+				点击{{aa}}
+			</div>
+		</div>
+	</body>
+</html>
+
+<script>
+  const { createApp, ref ,reactive} = Vue
+// console.log(root)
+  createApp({
+    setup() {
+      const message = ref('Hello vue!')
+	  const obj = reactive({
+		  name:"小米"
+	  })
+	  
+	  
+	  	let aa = ref(1)
+	  
+	  const fuck = () => {
+		  alert(1)
+	  }
+	  console.log(message)
+	  console.log(obj)
+      return {
+        message,
+		fuck,
+		aa
+      }
+    }
+  }).mount('#app')
+</script>
+
+<script setup>
+</script>

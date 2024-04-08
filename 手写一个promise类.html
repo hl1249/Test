@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+
+<script>
+	class myPromise{
+	    constructor(fn){
+	        this.status = 'pending'
+	        this.taskList = []
+	        this.value = null
+	
+	        const resolve = (data) => {
+	            if(this.status === 'pending'){
+	                this.status = 'success'
+	                this.value = data
+	                this.run(data)
+	            }
+	        }
+	
+	        const reject = (reason) => {
+	            if (this.status === 'pending') {
+	                this.status = 'error';
+	                this.value = reason;
+	                this.run(reason);
+	            }
+	        }
+	
+	        fn(resolve,reject)
+	    }
+	
+	    then(fn){
+	        if(this.status === 'pending'){
+	            this.taskList.push(fn)
+	        }else{
+	            this.run(this.value)
+	        }
+	        return this
+	    }
+	
+	    run(data){
+	        console.log('this.taskList',this.taskList)
+	        this.taskList.forEach(item => {
+	            item(data)
+	        })
+	    }
+	}
+	
+	let giao = new myPromise((resolve,reject) => {
+		setTimeout(()=>{
+			resolve(10086)
+		},3000)
+	}).then((res) => {
+		console.log('得到的值',res)
+	})
+</script>

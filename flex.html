@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Highlight</title>
+<style>
+  .highlight {
+    background-color: yellow;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<div id="inputText">This is a sample text. It contains some sample words.</div>
+<input type="text" id="keyword" placeholder="Enter keyword">
+<button onclick="highlight()">Highlight</button>
+
+<script>
+function highlight() {
+  const inputText = document.getElementById('inputText').innerText;
+  const keyword = document.getElementById('keyword').value;
+
+  // 创建正则表达式，全局匹配关键词
+  const regex = new RegExp(keyword, 'gi');
+  
+  // 在文本中使用 replace 方法，将匹配到的关键词用 span 标签包裹并添加样式
+  const highlightedText = inputText.replace(regex, match => `<span class="highlight">${match}</span>`);
+
+  // 更新文本区域的内容
+  document.getElementById('inputText').innerHTML = highlightedText;
+}
+</script>
+
+</body>
+</html>

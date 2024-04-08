@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Document</title>
+	</head>
+	<body>
+		<div class="content">
+			<div class="left" data-drop="move">
+				<div draggable="true" data-effect="copy" class="kecheng k-1">语文</div>
+				<div draggable="true" data-effect="copy" class="kecheng k-2">数学</div>
+				<div draggable="true" data-effect="copy" class="kecheng k-3">英语</div>
+				<div draggable="true" data-effect="copy" class="kecheng k-4">生物</div>
+				<div draggable="true" data-effect="copy" class="kecheng k-5">地理</div>
+			</div>
+			<table class="right">
+				<tbody>
+					<tr>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+					</tr>
+					<tr>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+					</tr>
+					<tr>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+					</tr>
+					<tr>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+						<td data-drop="copy"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>
+
+<script>
+	const content = document.querySelector('.content')
+	let current
+	content.ondragstart = e => {
+		e.dataTransfer.effectAllowed = e.target.dataset.effect
+		current = e.target
+		console.log(e.target)
+	}
+
+	// 进入 频繁触发
+	content.ondragover = e => {
+		e.preventDefault()
+		// console.log('ondragover',e.target)
+	}
+
+	function clearActive() {
+		document.querySelectorAll('.drop-active').forEach(node => {
+			node.classList.remove('drop-active')
+		})
+	}
+
+	function findDrop(node) {
+		while (node) {
+			if (node.dataset && node.dataset.drop) {
+				return node
+			}
+			node = node.parentNode
+		}
+	}
+
+	// 首次进入新的元素
+	content.ondragenter = e => {
+
+		const dropNode = findDrop(e.target)
+		if (!dropNode) {
+			return
+		}
+
+		clearActive()
+		if (current.dataset.effect === dropNode.dataset.drop) {
+			// console.log(e.target)
+			dropNode.classList.add('drop-active')
+		}
+	}
+
+	content.ondrop = e => {
+		console.log(e.target)
+		const dropNode = findDrop(e.target)
+		if (!dropNode) {
+			return
+		}
+
+		if (current.dataset.effect !== dropNode.dataset.drop) {
+			return
+		}
+		if (dropNode.dataset.drop === 'copy') {
+			clearActive()
+			let clone = current.cloneNode(true)
+			clone.dataset.effect = 'move'
+			dropNode.innerHTML = ""
+			dropNode.appendChild(clone)
+		}else{
+			current.remove()
+		}
+
+	}
+</script>
+
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+	}
+
+	.content {
+		display: flex;
+
+	}
+
+	.left {
+		display: flex;
+		flex-direction: column;
+		border: 1px solid black;
+		padding: 10px;
+		width: 120px;
+	}
+
+	.kecheng {
+		height: 50px;
+	}
+
+	.k-1 {
+		background-color: red;
+	}
+
+	.k-2 {
+		background-color: green;
+	}
+
+	.k-3 {
+		background-color: yellow;
+	}
+
+	.k-4 {
+		background-color: blue;
+	}
+
+	.k-5 {
+		background-color: orange;
+	}
+
+	.right td {
+		border: 1px solid black;
+		width: 120px;
+		height: 50px;
+	}
+
+	.drop-active {
+		background-color: #ccc;
+	}
+</style>

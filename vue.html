@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			<div>
+				<p>{{name}} + {{msg}}</p>
+			</div>
+			<p>{{name}}</p>
+			<p>{{msg}}</p>
+			<p>{{giao.age}}</p>
+		</div>
+	</body>
+</html>
+
+<script>
+	// function createGetValueByPath(path) {
+	// 	let paths = path.split(".")
+
+	// 	return function getValueByPath(obj) {
+
+	// 		let res = obj
+	// 		let prop
+	// 		while (prop = paths.shift()) {
+	// 			res = res[prop]
+	// 		}
+
+	// 		return res
+	// 	}
+	// }
+
+	let rkuohao = /\{\{(.+?)\}\}/g;
+
+	function compiler(template, data) {
+		const childNodes = template.childNodes
+
+		for (let i = 0; i < childNodes.length; i++) {
+			const type = childNodes[i].nodeType //1 元素 3 文本
+
+			if (type === 3) {
+
+				let text = childNodes[i].nodeValue
+
+				text = text.replace(rkuohao, (_, g) => {
+
+					// debugger
+					let key = g.trim()
+					console.log(key)
+					// let value = data[key]
+
+					let value = getValueByPath(data, key)
+
+					return value
+				})
+				childNodes[i].nodeValue = text
+			} else if (type === 1) {
+				compiler(childNodes[i], data)
+			}
+		}
+
+	}
+	
+	// 获取该对象的
+	function getValueByPath(obj,path){
+		let paths = path.split(".")
+		let res = obj
+		let prop
+		while(prop = paths.shift()){
+			res = res[prop]
+		}
+
+		return res
+	}
+
+	class Vue {
+		constructor(options) {
+			this._data = options.data
+			this._el = options.el
+
+			this.$el = this._templateDOM = document.querySelector(this._el)
+			this._parent = this._templateDOM.parentNode
+
+			this.render()
+		}
+	}
+
+	Vue.prototype.render = function() {
+		this.compiler()
+	}
+
+	Vue.prototype.compiler = function(tmpNode) {
+		let reaHTMLDOM = this._templateDOM.cloneNode(true)
+		compiler(reaHTMLDOM, this._data)
+		this.update(reaHTMLDOM)
+	}
+
+	Vue.prototype.update = function(real) {
+		this._parent.replaceChild(real, document.querySelector("#app"))
+		console.log(this.$el)
+		console.log(real)
+	}
+
+	const vue = new Vue({
+		el: "#app",
+		data: {
+			name: "小明",
+			msg: "消息",
+			giao: {
+				age: 18
+			}
+		}
+	})
+	
+	
+	class VNode{
+		constructor(tag,data,value,type){
+			this.tag = tag && tag.toLowerCase()
+			this.data = data
+			this.value = value
+			this.type = type
+			this.children = []
+		}
+		
+		appendChild(vnode){
+			this.children.push(vnode)
+		}
+		
+	}
+	
+	function getVNode(node){
+		let nodeType = node.nodeType
+		let  _vnode = null
+		if(nodeType === 1){
+			// 元素
+			let nodeNmae = node.nodeName
+			let attrs = node.attributes;
+			let _attrObj = {}
+			for(let i = 0 ; i < attrs.length ; i ++){
+				_attrObj[attrs[i].nodeName] = attrs[i].nodeValue
+			}
+			_vnode = new VNode(nodeNmae,_attrObj,undefined,nodeType)
+			
+			let childNodes = node.childNodes
+			for(let i = 0;i< childNodes.length;i++){
+				_vnode.appendChild(getVNode(childNodes[i]))
+			}
+		}
+		else if (nodeType === 3){
+				_vnode = new VNode(undefined,undefined,node.nodeValue,nodeType)
+		}
+		
+		return _vnode
+	}
+	
+	let app = document.querySelector('#app')
+	
+	let vapp = getVNode(app)
+	
+	console.log(vapp)
+	
+</script>
