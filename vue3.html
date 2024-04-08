@@ -16,8 +16,7 @@
 
 <script>
   const { createApp, ref ,reactive} = Vue
-// console.log(root)
-  createApp({
+  const mv =createApp({
     setup() {
       const message = ref('Hello vue!')
 	  const obj = reactive({
@@ -39,6 +38,8 @@
       }
     }
   }).mount('#app')
+  
+
 </script>
 
 <script setup>
