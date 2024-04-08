@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>window.onload 与 DOMContentLoaded 区别 示例</title>
+	</head>
+	<body>
+		<img src="./A.png" alt="">
+		
+		<script>
+			// 文件资源都加载完毕
+			window.onload = function() {
+				console.log('页面已完全加载');
+			};
+			
+			// dom结构加载完毕
+			document.addEventListener('DOMContentLoaded', function() {
+				console.log('dom结构已经加载完毕');
+			});
+		</script>
+
+	</body>
+</html>
