@@ -19,6 +19,33 @@
 	  { _id:"007", name:"小米", parent_id: "005" },
 	];
 	
+	// 递归
+	function toTreeDiff(array,parent_id = null){
+		const tree = {}
+		
+		array.filter( item => item.parent_id == parent_id ).forEach( item => {
+			tree[item._id] = {...item,children:toTreeDiff(array,item._id)}
+		})
+		console.log("tree",tree)
+		return tree
+	}
+	
+	// console.log("递归",toTreeDiff(arrayData))
+	
+	
+	function newDiff(array,parent_id = null){
+		const tree = {}
+		
+		array.filter( item => item.parent_id == parent_id ).forEach( item => {
+			tree[item._id] = {...item,children:toTreeDiff(array,item._id)}
+		})
+		console.log("tree",tree)
+		return tree
+	}
+	newDiff(arrayData)
+	
+	
+	// 抽离
 	function toTree(array){
 		let obj = {}
 		let result = []
@@ -30,7 +57,7 @@
 				obj[item.parent_id].children = []
 			}
 		})
-		console.log(obj)
+		// console.log(obj)
 		array.forEach(item => {
 			if(item.parent_id){
 				obj[item.parent_id].children.push(item)
@@ -43,7 +70,7 @@
 		return result
 	}
 	
-	const tree = toTree(arrayData)
-	console.log(tree)
+	// const tree = toTree(arrayData)
+	// console.log(tree)
 	
 </script>
