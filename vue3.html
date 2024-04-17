@@ -15,15 +15,23 @@
 </html>
 
 <script>
-  const { createApp, ref ,reactive} = Vue
+  const { createApp, ref ,reactive ,onMounted} = Vue
   const mv =createApp({
-    setup() {
-      const message = ref('Hello vue!')
+	data(){
+		return{
+			wuhu:"呜呼呼"
+		}
+	},
+	setup() {
+		console.log("是吗")
+	  const message = ref('Hello vue!')
 	  const obj = reactive({
 		  name:"小米"
 	  })
 	  
-	  
+	  onMounted(()=>{
+		  console.log("是的")
+	  })
 	  	let aa = ref(1)
 	  
 	  const fuck = () => {
@@ -31,12 +39,19 @@
 	  }
 	  console.log(message)
 	  console.log(obj)
-      return {
-        message,
+	  return {
+	    message,
 		fuck,
 		aa
-      }
-    }
+	  }
+	},
+	beforeCreate(){
+		console.log("小老弟")
+	},
+	created(){
+		console.log("我的生命周期在你之上")
+	},
+   
   }).mount('#app')
   
 
